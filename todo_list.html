@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: rgba(30, 41, 59, 0.85); /* Added transparency */
+            --primary: #7c3aed;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                        url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 1.8rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        #taskInput {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            transition: all 0.2s ease;
+        }
+
+        #taskInput:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+        }
+
+        #taskInput::placeholder {
+            color: var(--text-secondary);
+        }
+
+        #addBtn {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        #addBtn:hover {
+            background-color: #6d28d9;
+            transform: translateY(-1px);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        #deleteAllBtn {
+            padding: 0.6rem 1.2rem;
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #deleteAllBtn:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        #deleteAllBtn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        #taskList {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--surface);
+        }
+
+        #taskList::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #taskList::-webkit-scrollbar-track {
+            background: var(--surface);
+            border-radius: 3px;
+        }
+
+        #taskList::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
+        }
+
+        .task-item:hover {
+            background-color: rgba(255, 255, 255, 0.07);
+            border-color: var(--primary);
+        }
+
+        input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .task-text {
+            flex: 1;
+            margin: 0 1rem;
+            word-break: break-word;
+            padding-right: 0.5rem;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .delete-btn {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            width: 28px;
+            height: 28px;
+        }
+
+        .delete-btn:hover {
+            background-color: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .delete-btn::before {
+            content: "×";
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-item {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .input-container {
+                flex-direction: column;
+            }
+            
+            #addBtn {
+                width: 100%;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        
+        <div class="input-container">
+            <input type="text" id="taskInput" placeholder="Enter a new task...">
+            <button id="addBtn">Add Task</button>
+        </div>
+        
+        <div class="controls">
+            <button id="deleteAllBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                </svg>
+                Delete All
+            </button>
+        </div>
+        
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        // DOM elements
+        const taskInput = document.getElementById('taskInput');
+        const addBtn = document.getElementById('addBtn');
+        const deleteAllBtn = document.getElementById('deleteAllBtn');
+        const taskList = document.getElementById('taskList');
+        
+        // Load tasks from localStorage
+        document.addEventListener('DOMContentLoaded', loadTasks);
+        
+        // Add task function
+        function addTask() {
+            const taskText = taskInput.value.trim();
+            
+            if (taskText) {
+                // Create task object
+                const task = {
+                    id: Date.now(),
+                    text: taskText,
+                    completed: false
+                };
+                
+                // Add to DOM
+                renderTask(task);
+                
+                // Save to localStorage
+                saveTask(task);
+                
+                // Clear input
+                taskInput.value = '';
+                taskInput.focus();
+            }
+        }
+        
+        // Render task in the DOM
+        function renderTask(task) {
+            const li = document.createElement('li');
+            li.className = 'task-item';
+            li.dataset.id = task.id;
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completed;
+            checkbox.addEventListener('change', toggleTask);
+            
+            const span = document.createElement('span');
+            span.className = 'task-text';
+            span.textContent = task.text;
+            if (task.completed) {
+                span.classList.add('completed');
+            }
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.addEventListener('click', deleteTask);
+            
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+            
+            taskList.appendChild(li);
+            
+            // Show empty state if no tasks
+            checkEmptyState();
+        }
+        
+        // Toggle task completion status
+        function toggleTask(e) {
+            const taskId = parseInt(e.target.parentElement.dataset.id);
+            const tasks = getTasks();
+            
+            const updatedTasks = tasks.map(task => {
+                if (task.id === taskId) {
+                    return {
+                        ...task,
+                        completed: !task.completed
+                    };
+                }
+                return task;
+            });
+            
+            localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+            loadTasks(); // Refresh the list
+        }
+        
+        // Delete task
+        function deleteTask(e) {
+            const taskId = parseInt(e.target.parentElement.dataset.id);
+            const tasks = getTasks();
+            
+            const updatedTasks = tasks.filter(task => task.id !== taskId);
+            localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+            
+            // Remove from DOM
+            e.target.parentElement.remove();
+            
+            // Show empty state if no tasks
+            checkEmptyState();
+        }
+        
+        // Delete all tasks
+        function deleteAllTasks() {
+            if (taskList.children.length === 0 || 
+                (taskList.children.length === 1 && taskList.firstChild.classList.contains('empty-state'))) {
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete all tasks?')) {
+                localStorage.removeItem('tasks');
+                taskList.innerHTML = '';
+                checkEmptyState();
+            }
+        }
+        
+        // Save task to localStorage
+        function saveTask(task) {
+            const tasks = getTasks();
+            tasks.push(task);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+        
+        // Get all tasks from localStorage
+        function getTasks() {
+            return JSON.parse(localStorage.getItem('tasks')) || [];
+        }
+        
+        // Load tasks from localStorage
+        function loadTasks() {
+            taskList.innerHTML = '';
+            const tasks = getTasks();
+            
+            if (tasks.length === 0) {
+                checkEmptyState();
+                return;
+            }
+            
+            tasks.forEach(task => {
+                renderTask(task);
+            });
+        }
+        
+        // Check if list is empty and show message
+        function checkEmptyState() {
+            if (taskList.children.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'empty-state';
+                emptyMsg.textContent = 'No tasks yet. Add one above!';
+                taskList.appendChild(emptyMsg);
+            }
+        }
+        
+        // Event listeners
+        addBtn.addEventListener('click', addTask);
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+        deleteAllBtn.addEventListener('click', deleteAllTasks);
+    </script>
+</body>
+</html>

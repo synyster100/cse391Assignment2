@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-image: url('download.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+}
+
+h1 {
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to right, #00d2ff, #3a7bd5);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 1px;
+}
+
+.stopwatch-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 25px;
+    padding: 3rem;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.stopwatch-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+    z-index: -1;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.display {
+    font-size: 5rem;
+    font-weight: 700;
+    margin: 2rem 0;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 5px;
+    position: relative;
+}
+
+.display::after {
+    content: 'seconds';
+    position: absolute;
+    bottom: -1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    font-weight: normal;
+    opacity: 0.7;
+    letter-spacing: normal;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    color: white;
+    min-width: 120px;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: translateX(-100%);
+    transition: 0.6s;
+    z-index: -1;
+}
+
+button:hover::before {
+    transform: translateX(100%);
+}
+
+button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+#startBtn {
+    background: linear-gradient(45deg, #00b09b, #96c93d);
+}
+
+#stopBtn {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+}
+
+#resetBtn {
+    background: linear-gradient(45deg, #4776e6, #8e54e9);
+}
+
+.message {
+    margin-top: 2rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #ff416c;
+    text-shadow: 0 0 5px rgba(255, 65, 108, 0.3);
+    height: 1.5rem;
+}
+
+/* Animation for display */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.display.pulse {
+    animation: pulse 0.5s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stopwatch-container {
+        width: 90%;
+        padding: 2rem;
+    }
+    
+    .display {
+        font-size: 3.5rem;
+    }
+    
+    .button-container {
+        gap: 1rem;
+    }
+    
+    button {
+        padding: 0.8rem 1.5rem;
+        min-width: 100px;
+    }
+}
+    </style>
+</head>
+<body>
+    <h1>Stopwatch</h1>
+    
+    <div class="stopwatch-container">
+        <div id="display" class="display">0</div>
+        
+        <div class="button-container">
+            <button id="startBtn">Start</button>
+            <button id="stopBtn">Stop</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+        
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const message = document.getElementById('message');
+        
+        // Variables for stopwatch functionality
+        let seconds = 0;
+        let timer = null;
+        let isRunning = false;
+        const MAX_SECONDS = 30;
+        
+        // Update the display
+        function updateDisplay() {
+            display.textContent = seconds;
+        }
+        
+        // Start the stopwatch
+        function startTimer() {
+            if (!isRunning && seconds < MAX_SECONDS) {
+                isRunning = true;
+                message.textContent = "";
+                
+                timer = setInterval(() => {
+                    seconds += 3;
+                    updateDisplay();
+                    
+                    if (seconds >= MAX_SECONDS) {
+                        stopTimer();
+                        message.textContent = "Timer has reached 30 seconds!";
+                    }
+                }, 3000); // Update every 3 seconds (3000ms)
+            }
+        }
+        
+        // Stop the stopwatch
+        function stopTimer() {
+            clearInterval(timer);
+            isRunning = false;
+        }
+        
+        // Reset the stopwatch
+        function resetTimer() {
+            stopTimer();
+            seconds = 0;
+            updateDisplay();
+            message.textContent = "";
+        }
+        
+        // Event listeners for buttons
+        startBtn.addEventListener('click', startTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>

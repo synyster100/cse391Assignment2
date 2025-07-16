@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSE 391 Assignment 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Dark Aesthetic Theme */
+        :root {
+            --primary: #8a63ff;
+            --primary-light: #a78bfa;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --dark: #0f172a;
+            --darker: #020617;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--darker);
+            color: var(--text);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            width: 100%;
+            background: linear-gradient(to bottom, var(--darker), transparent);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(138, 99, 255, 0.5), transparent);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin: 0;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-weight: 300;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+            width: 90%;
+            max-width: 1200px;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            text-align: center;
+            border: 1px solid rgba(138, 99, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            border-color: rgba(138, 99, 255, 0.3);
+        }
+
+        .card-img {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .card-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--darker));
+            opacity: 0.7;
+        }
+
+        .fortune {
+            background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');
+        }
+
+        .stopwatch {
+            background-image: url('https://images.unsplash.com/photo-1517438476312-10d79c077509?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');
+        }
+
+        .todo {
+            background-image: url('https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');
+        }
+
+        .card-content {
+            padding: 2rem;
+        }
+
+        h3 {
+            font-family: 'Playfair Display', serif;
+            margin: 0 0 1rem 0;
+            font-size: 1.6rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(138, 99, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(138, 99, 255, 0.4);
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            width: 100%;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(138, 99, 255, 0.3), transparent);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1rem;
+            }
+            
+            .card-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Glow animation for cards */
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(138, 99, 255, 0.1); }
+            50% { box-shadow: 0 0 20px rgba(138, 99, 255, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(138, 99, 255, 0.1); }
+        }
+
+        .card {
+            animation: glow 6s infinite ease-in-out;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 1s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CSE 391 Assignment 2</h1>
+    </header>
+
+    <div class="dashboard">
+        <div class="card">
+            <div class="card-img fortune"></div>
+            <div class="card-content">
+                <h3>Fortune Generator</h3>
+                <p>Receive mystical fortunes with customizable visual styles. Wisdom from the digital beyond awaits.</p>
+                <a href="fortune_generator.html" class="btn">Enter the Oracle</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-img stopwatch"></div>
+            <div class="card-content">
+                <h3>Stopwatch</h3>
+                <p>A precision chronometer counting in dramatic 3-second increments. Time has never felt so intense.</p>
+                <a href="stopwatch.html" class="btn">Begin Countdown</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-img todo"></div>
+            <div class="card-content">
+                <h3>To-Do List</h3>
+                <p>Your digital taskmaster. No excuse will save you from these persistent reminders.</p>
+                <a href="todo_list.html" class="btn">Face Your Duties</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>If you want to learn more about building this,</p>
+        <p> Don't Ask me !!</p>
+        <p>Ask the genius faculty in the <a href="https://discord.com/channels/1384390507928617020/1384390508708888680" >channel</a> </p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortune Generator with Image Background</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&family=Roboto+Mono:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Fortune Generator - With Image Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 100vh;
+            /* New background image styling */
+            background-image: url('istockphoto-155391040-612x612.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        /* Overlay to improve text readability */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(to right, #fff, #f3f3f3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 3px;
+        }
+
+        .fortune-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 80%;
+            max-width: 700px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .fortune-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4);
+        }
+
+        .fortune-text {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 15px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            /* Default style */
+            background-color: rgba(248, 249, 250, 0.9);
+            color: #212529;
+            border: 3px solid #6c757d;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Preset Styles */
+        .preset-classic {
+            background-color: rgba(248, 249, 250, 0.9);
+            color: #212529;
+            border: 3px solid #6c757d;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .preset-elegant {
+            background-color: rgba(255, 248, 240, 0.9);
+            color: #5e503f;
+            border: 3px solid #c6ac8f;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+        }
+
+        .preset-modern {
+            background-color: rgba(233, 245, 255, 0.9);
+            color: #0a2463;
+            border: 3px solid #3e92cc;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .preset-whimsical {
+            background-color: rgba(255, 240, 245, 0.9);
+            color: #d6409f;
+            border: 3px solid #ff8fab;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+        }
+
+        .preset-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s;
+            z-index: -1;
+        }
+
+        button:hover::before {
+            transform: translateX(100%);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .preset-btn {
+            min-width: 120px;
+        }
+
+        #preset1 {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            color: white;
+        }
+
+        #preset2 {
+            background: linear-gradient(45deg, #c6ac8f, #a68a64);
+            color: white;
+        }
+
+        #preset3 {
+            background: linear-gradient(45deg, #3e92cc, #2a628f);
+            color: white;
+        }
+
+        #preset4 {
+            background: linear-gradient(45deg, #ff8fab, #d6409f);
+            color: white;
+        }
+
+        #refreshBtn {
+            background: linear-gradient(to right, #f6d365, #fda085);
+            color: #333;
+            padding: 0.8rem 1.8rem;
+            font-weight: 700;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        /* Pulse animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulsing {
+            animation: pulse 0.4s ease-out;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            text-align: center;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Animation for fortune text */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fortune-text {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .fortune-container {
+                width: 90%;
+                padding: 1.5rem;
+            }
+            
+            .preset-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .fortune-text {
+                font-size: 1.3rem;
+                padding: 1.5rem;
+            }
+            
+            .preset-whimsical {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Know Your Fortune</h1>
+    
+    <div class="fortune-container">
+        <div id="fortuneText" class="fortune-text preset-classic">
+            Your fortune will appear here...
+        </div>
+        
+        <div class="preset-buttons">
+            <button id="preset1" class="preset-btn">Classic</button>
+            <button id="preset2" class="preset-btn">Elegant</button>
+            <button id="preset3" class="preset-btn">Modern</button>
+            <button id="preset4" class="preset-btn">Whimsical</button>
+        </div>
+        
+        <button id="refreshBtn">Refresh</button>
+    </div>
+    
+    <footer>
+        This fortune is funnier than you'll ever be.</br>
+        @ The Fortune Parrot
+    </footer>
+
+    <script>
+        // Array of fortune messages
+        const fortunes = [
+            "That wasn't chicken you just ate. Your real fortune is not getting food poisoning tonight.",
+
+            "Your ex still thinks about you... mainly how they dodged a bullet.",
+
+            "You will find love when you least expect it. Unfortunately, they won't feel the same way.",
+
+            "Your coworkers tolerate you. Barely.",
+
+            "That haircut was a choice. We'll all pretend not to notice.",
+
+            "Your Netflix password is more popular than you are.",
+
+            "Your pet loves you because you're the food person. That's it.",
+
+            "Your internet search history suggests you should delete your browser data immediately.",
+
+            "They're not ignoring your texts. They're ignoring you.",
+
+            "Your participation trophy is in the mail. Try not to feel too accomplished.",
+        ];
+        
+        // Get DOM elements
+        const fortuneText = document.getElementById('fortuneText');
+        const preset1Btn = document.getElementById('preset1');
+        const preset2Btn = document.getElementById('preset2');
+        const preset3Btn = document.getElementById('preset3');
+        const preset4Btn = document.getElementById('preset4');
+        const refreshBtn = document.getElementById('refreshBtn');
+        
+        // Display random fortune
+        function displayRandomFortune() {
+            const randomIndex = Math.floor(Math.random() * fortunes.length);
+            fortuneText.textContent = fortunes[randomIndex];
+        }
+        
+        // Apply preset styles
+        preset1Btn.addEventListener('click', () => {
+            fortuneText.className = 'fortune-text preset-classic';
+        });
+        
+        preset2Btn.addEventListener('click', () => {
+            fortuneText.className = 'fortune-text preset-elegant';
+        });
+        
+        preset3Btn.addEventListener('click', () => {
+            fortuneText.className = 'fortune-text preset-modern';
+        });
+        
+        preset4Btn.addEventListener('click', () => {
+            fortuneText.className = 'fortune-text preset-whimsical';
+        });
+        
+        // Refresh fortune with pulse animation
+        refreshBtn.addEventListener('click', () => {
+            // Add pulsing animation
+            refreshBtn.classList.add('pulsing');
+            
+            // Display new fortune after animation completes
+            setTimeout(() => {
+                displayRandomFortune();
+                refreshBtn.classList.remove('pulsing');
+            }, 400);
+        });
+        
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', displayRandomFortune);
+    </script>
+</body>
+</html>
