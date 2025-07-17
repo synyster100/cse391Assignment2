@@ -239,7 +239,7 @@ button:hover {
                         stopTimer();
                         message.textContent = "Timer has reached 30 seconds!";
                     }
-                }, 3000); // Update every 3 seconds (3000ms)
+                }, 1000); 
             }
         }
         
@@ -257,12 +257,12 @@ button:hover {
             message.textContent = "";
         }
         
-        // Event listeners for buttons
+       
         startBtn.addEventListener('click', startTimer);
         stopBtn.addEventListener('click', stopTimer);
         resetBtn.addEventListener('click', resetTimer);
         
-        // Initialize display
+        
         updateDisplay();
     </script>
 </body>
